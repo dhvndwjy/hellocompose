@@ -33,44 +33,43 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HelloComposeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting(name = "Dheavanda Wijaya")
-                }
+                Greeting()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+fun Greeting() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.foto_profil),
-            contentDescription = "Foto profil",
+        Column(
             modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Dheavanda Wijaya",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = "NIM: 01082240014",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.foto_profil),
+                contentDescription = "Foto profil",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Dheavanda Wijaya",
+                style = MaterialTheme.typography.headlineLarge
+            )
+            Text(
+                text = "NIM: 01082240014",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -79,6 +78,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     HelloComposeTheme {
-        Greeting("Dheavanda Wijaya")
+        Greeting()
     }
 }
