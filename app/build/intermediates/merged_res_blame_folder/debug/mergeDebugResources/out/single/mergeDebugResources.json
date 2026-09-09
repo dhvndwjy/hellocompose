@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.example.ch03.app-debug-47:/drawable_strings.xml.flat",
+        "source": "com.example.ch03.app-main-49:/drawable/strings.xml"
+    },
+    {
+        "merged": "com.example.ch03.app-debug-47:/drawable_themes.xml.flat",
+        "source": "com.example.ch03.app-main-49:/drawable/themes.xml"
+    },
+    {
+        "merged": "com.example.ch03.app-debug-47:/drawable_foto_profil.png.flat",
+        "source": "com.example.ch03.app-main-49:/drawable/foto_profil.png"
+    }
+]
