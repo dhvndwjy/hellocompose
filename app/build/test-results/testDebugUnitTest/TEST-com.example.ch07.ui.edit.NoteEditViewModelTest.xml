@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.ch07.ui.edit.NoteEditViewModelTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-01T13:09:10" hostname="Dheavandas-MacBook-Air.local" time="0.004">
+  <properties/>
+  <testcase name="catatan yang tidak ditemukan menampilkan pesan" classname="com.example.ch07.ui.edit.NoteEditViewModelTest" time="0.001"/>
+  <testcase name="edit memuat data lama dan mempertahankan createdAt dan isPinned" classname="com.example.ch07.ui.edit.NoteEditViewModelTest" time="0.001"/>
+  <testcase name="catatan baru - createdAt dari clock dan teks dirapikan" classname="com.example.ch07.ui.edit.NoteEditViewModelTest" time="0.001"/>
+  <testcase name="judul kosong ditolak dan tidak menyimpan apa pun" classname="com.example.ch07.ui.edit.NoteEditViewModelTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
