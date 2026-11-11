@@ -263,11 +263,11 @@ fun StartLiveScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = buttonGreen,
-                        unfocusedBorderColor = textBrown.copy(alpha = 0.3f),
+                        unfocusedBorderColor = textBrown.copy(alpha = 0.5f),
                         focusedLabelColor = buttonGreen,
                         unfocusedLabelColor = textBrown,
                         focusedTextColor = textBrown,
-                        unfocusedTextColor = textBrown,
+                        unfocusedTextColor = textBrown.copy(alpha = 0.6f),
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     )
