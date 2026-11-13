@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isValidNote() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['title', 'content', 'createdAt', 'updatedAt', 'isPinned', 'tags'])
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 200
+        && data.content is string
+        && data.createdAt is int
+        && data.updatedAt is int
+        && data.isPinned is bool
+        && data.tags is list;
+    }
+
+    match /users/{userId}/notes/{noteId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidNote();
+    }
+  }
+}
