@@ -3,10 +3,10 @@ package com.example.feederku.views.dashboard.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -23,27 +23,33 @@ fun DashboardFooter(
     onMapClick: () -> Unit,
     onChatClick: () -> Unit,
     onDonateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    currentRoute: String = ""
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(headerFooter)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val homeTint = if (currentRoute == "dashboard") buttonGreen else Color.White
+        val mapTint = if (currentRoute == "map") buttonGreen else Color.White
+        val chatTint = if (currentRoute == "chat") buttonGreen else Color.White
+        val donateTint = if (currentRoute == "donation") buttonGreen else Color.White
+
         IconButton(onClick = onHomeClick) {
-            Icon(Icons.Default.Home, contentDescription = "Home", tint = buttonGreen)
+            Icon(Icons.Default.Home, contentDescription = "Home", tint = homeTint)
         }
         IconButton(onClick = onMapClick) {
-            Icon(Icons.Default.LocationOn, contentDescription = "Map", tint = Color.White)
+            Icon(Icons.Default.LocationOn, contentDescription = "Map", tint = mapTint)
         }
         IconButton(onClick = onChatClick) {
-            Icon(Icons.Default.Mail, contentDescription = "Community", tint = Color.White)
+            Icon(Icons.Default.MailOutline, contentDescription = "Community", tint = chatTint)
         }
         IconButton(onClick = onDonateClick) {
-            Icon(Icons.Default.Favorite, contentDescription = "Donate", tint = Color.White)
+            Icon(Icons.Default.FavoriteBorder, contentDescription = "Donate", tint = donateTint)
         }
     }
 }

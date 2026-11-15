@@ -27,6 +27,7 @@ fun DashboardRoute(
     onLiveStreamClick: (String) -> Unit,
     onNavigateToMap: () -> Unit,
     onNavigateToDonation: () -> Unit,
+    onNavigateToChat: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
@@ -123,7 +124,7 @@ fun DashboardRoute(
         DashboardFooter(
             onHomeClick = {},
             onMapClick = onNavigateToMap,
-            onChatClick = {},
+            onChatClick = onNavigateToChat,
             onDonateClick = onNavigateToDonation,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
