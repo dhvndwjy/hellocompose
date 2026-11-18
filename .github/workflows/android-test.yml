@@ -1,0 +1,26 @@
+name: Android CI Test
+
+on:
+  push:
+    branches: [ "pertemuan-13", "main" ]
+  pull_request:
+    branches: [ "pertemuan-13", "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
