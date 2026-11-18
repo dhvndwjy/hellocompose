@@ -84,21 +84,21 @@ dependencies {
     implementation("androidx.camera:camera-camera2:$cameraVersion")
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")
     implementation("androidx.camera:camera-view:$cameraVersion")
-    
+
     // Fix for ListenableFuture resolution
     implementation("com.google.guava:guava:33.3.1-android")
     implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
 
+    // Testing Dependencies
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.0") // atau sesuaikan versi Compose BOM Anda
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.6.0")
+    testImplementation("app.cash.turbine:turbine:1.1.0") // Opsional untuk menghilangkan warning Turbine
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

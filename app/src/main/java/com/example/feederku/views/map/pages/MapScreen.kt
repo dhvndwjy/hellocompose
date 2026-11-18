@@ -87,7 +87,7 @@ fun MapScreen(
                         val marker = Marker(mapView).apply {
                             position = sighting.location
                             title = sighting.title
-                            setOnMarkerClickListener { m, _ ->
+                            setOnMarkerClickListener { _, _ ->
                                 viewModel.onSightingClick(sighting)
                                 true
                             }
@@ -135,7 +135,7 @@ fun MapScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
-                        Icon(Icons.Default.Search, contentDescription = null, tint = textBrown)
+                        Icon(Icons.Default.Search, contentDescription = "Ikon Pencarian", tint = textBrown)
                         Spacer(Modifier.width(8.dp))
                         Text("Search for location...", color = textBrown.copy(alpha = 0.6f))
                     }
@@ -170,7 +170,7 @@ fun MapScreen(
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
+                    Icon(Icons.Default.Add, contentDescription = "Tombol Tambah Laporan")
                     Spacer(Modifier.width(4.dp))
                     Text("Report Sighting")
                 }

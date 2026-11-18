@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +67,7 @@ fun DonationScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             Surface(
                 color = ColorTimber,
@@ -120,7 +120,7 @@ fun DonationScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = null, tint = textBrown.copy(alpha = 0.6f))
+                            Icon(Icons.Default.Search, contentDescription = "Pencarian Kampanye", tint = textBrown.copy(alpha = 0.6f))
                             Spacer(modifier = Modifier.width(8.dp))
                             BasicTextField(
                                 value = uiState.searchQuery,

@@ -1,6 +1,5 @@
 package com.example.feederku.views.donation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,7 +51,7 @@ fun DonationSuccessScreen(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = null,
+                        contentDescription = "Ikon Sukses",
                         tint = Color.White,
                         modifier = Modifier.size(60.dp)
                     )
