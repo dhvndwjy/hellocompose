@@ -61,7 +61,13 @@ fun LoginRoute(
             scope.launch {
                 getGoogleIdToken(context)
                     .onSuccess(viewModel::onGoogleIdToken)
-                    .onFailure { viewModel.onGoogleError(it.message) }
+                    .onFailure { 
+                        val errorMsg = it.message ?: "Google login failed"
+                        viewModel.onGoogleError(errorMsg)
+                        if (errorMsg != "Login cancelled") {
+                            android.widget.Toast.makeText(context, errorMsg, android.widget.Toast.LENGTH_LONG).show()
+                        }
+                    }
             }
         },
         modifier = modifier

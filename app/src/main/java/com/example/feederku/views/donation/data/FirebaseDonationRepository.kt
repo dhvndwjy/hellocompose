@@ -24,7 +24,39 @@ class FirebaseDonationRepository(
                 val campaigns = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(DonationCampaign::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
-                trySend(campaigns)
+
+                if (campaigns.isEmpty()) {
+                    trySend(
+                        listOf(
+                            DonationCampaign(
+                                id = "camp_1",
+                                title = "Emergency Medical Care for Rescued Stray Cats",
+                                organizationName = "Jakarta Animal Aid",
+                                description = "Help us fund emergency surgeries and medications for rescued stray cats suffering from severe injuries.",
+                                targetAmount = 5000000,
+                                collectedAmount = 3450000,
+                                category = "Medical",
+                                isVerified = true,
+                                daysRemaining = 12,
+                                donorCount = 48
+                            ),
+                            DonationCampaign(
+                                id = "camp_2",
+                                title = "Monthly Food Supply for 100 Sheltered Cats",
+                                organizationName = "Paws & Claws Shelter",
+                                description = "Providing nutritious dry and wet food for over 100 cats currently sheltered at our rescue center.",
+                                targetAmount = 10000000,
+                                collectedAmount = 7800000,
+                                category = "Feeding",
+                                isVerified = true,
+                                daysRemaining = 5,
+                                donorCount = 92
+                            )
+                        )
+                    )
+                } else {
+                    trySend(campaigns)
+                }
             }
         awaitClose { subscription.remove() }
     }
@@ -32,7 +64,38 @@ class FirebaseDonationRepository(
     override suspend fun getCampaignById(id: String): DonationCampaign? {
         return try {
             val doc = db.collection("campaigns").document(id).get().await()
-            doc.toObject(DonationCampaign::class.java)?.copy(id = doc.id)
+            if (doc.exists()) {
+                doc.toObject(DonationCampaign::class.java)?.copy(id = doc.id)
+            } else {
+                // Fallback for sample campaigns if not in Firestore yet
+                when (id) {
+                    "camp_1" -> DonationCampaign(
+                        id = "camp_1",
+                        title = "Emergency Medical Care for Rescued Stray Cats",
+                        organizationName = "Jakarta Animal Aid",
+                        description = "Help us fund emergency surgeries and medications for rescued stray cats suffering from severe injuries.",
+                        targetAmount = 5000000,
+                        collectedAmount = 3450000,
+                        category = "Medical",
+                        isVerified = true,
+                        daysRemaining = 12,
+                        donorCount = 48
+                    )
+                    "camp_2" -> DonationCampaign(
+                        id = "camp_2",
+                        title = "Monthly Food Supply for 100 Sheltered Cats",
+                        organizationName = "Paws & Claws Shelter",
+                        description = "Providing nutritious dry and wet food for over 100 cats currently sheltered at our rescue center.",
+                        targetAmount = 10000000,
+                        collectedAmount = 7800000,
+                        category = "Feeding",
+                        isVerified = true,
+                        daysRemaining = 5,
+                        donorCount = 92
+                    )
+                    else -> null
+                }
+            }
         } catch (e: Exception) {
             null
         }
@@ -51,7 +114,18 @@ class FirebaseDonationRepository(
                 val donors = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Donor::class.java)
                 } ?: emptyList()
-                trySend(donors)
+                
+                if (donors.isEmpty()) {
+                    trySend(
+                        listOf(
+                            Donor("Budi Santoso", 100000, System.currentTimeMillis() - 3600000),
+                            Donor("Siti Aminah", 250000, System.currentTimeMillis() - 7200000),
+                            Donor("Ahmad Fauzi", 50000, System.currentTimeMillis() - 14400000)
+                        )
+                    )
+                } else {
+                    trySend(donors)
+                }
             }
         awaitClose { subscription.remove() }
     }
@@ -76,11 +150,9 @@ class FirebaseDonationRepository(
             
             val batch = db.batch()
             
-            // Add donation record
             val donationRef = db.collection("donations").document()
             batch.set(donationRef, donationData)
             
-            // Update campaign stats
             val campaignRef = db.collection("campaigns").document(campaignId)
             batch.update(campaignRef, "collectedAmount", FieldValue.increment(amount))
             batch.update(campaignRef, "donorCount", FieldValue.increment(1))

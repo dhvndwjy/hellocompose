@@ -36,7 +36,7 @@ fun DonationRoute(
     onNavigateToMap: () -> Unit,
     onNavigateToChat: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DonationViewModel = viewModel()
+    viewModel: DonationViewModel = viewModel(factory = DonationViewModel.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

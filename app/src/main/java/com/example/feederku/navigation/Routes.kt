@@ -8,6 +8,15 @@ sealed class Routes(val route: String){
     data object Login : Routes("login")
     data object Dashboard : Routes("dashboard")
     data object Profile : Routes("profile")
+    data object Settings : Routes("settings")
+    data object AccountInformation : Routes("settings/account_info")
+    data object EditProfile : Routes("settings/edit_profile")
+    data object Notifications : Routes("settings/notifications")
+    data object PrivacySecurity : Routes("settings/privacy_security")
+    data object ChangePassword : Routes("settings/change_password")
+    data object Language : Routes("settings/language")
+    data object HelpSupport : Routes("settings/help_support")
+    data object AboutFeederKu : Routes("settings/about")
     data object LiveStreamFlow: Routes("livestream_flow")
     data object Map : Routes("map")
     data object Donation : Routes("donation")
@@ -28,12 +37,11 @@ sealed class Routes(val route: String){
     data object DonationSuccess : Routes("donation_success/{type}") {
         fun createRoute(type: String) = "donation_success/$type"
     }
+    data object Chat : Routes("chat")
     data object CommunityList : Routes("community_list")
-    data object Chat : Routes("chat/{groupId}") {
-        fun createRoute(groupId: String) = "chat/$groupId"
+    data object PublishPost : Routes("publish_post")
+    data object Request : Routes("request")
+    data object DirectMessage : Routes("direct_message/{friendName}") {
+        fun createRoute(friendName: String) = "direct_message/$friendName"
     }
-    data object LocationDetails : Routes("location_details/{locationId}") {
-        fun createRoute(locationId: String) = "location_details/$locationId"
-    }
-    data object NewCampaignPost : Routes("new_campaign_post")
 }

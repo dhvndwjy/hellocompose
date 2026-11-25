@@ -7,6 +7,7 @@ import org.osmdroid.util.GeoPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.maplibre.android.geometry.LatLng
 
 data class MapUiState(
     val sightings: List<Sighting> = emptyList(),
@@ -28,7 +29,7 @@ class MapViewModel : ViewModel() {
             Sighting(
                 id = "1",
                 title = "Benton Junction",
-                location = GeoPoint(-6.225, 106.611),
+                location = LatLng(-6.225, 106.611),
                 distance = "500m away",
                 category = SightingCategory.URGENT_HELP,
                 status = "URGENT",
@@ -38,7 +39,7 @@ class MapViewModel : ViewModel() {
             Sighting(
                 id = "2",
                 title = "U-Residence 1",
-                location = GeoPoint(-6.226, 106.612),
+                location = LatLng(-6.226, 106.612),
                 distance = "1 km away",
                 category = SightingCategory.MANY_CATS,
                 status = "HUNGRY",
@@ -48,7 +49,7 @@ class MapViewModel : ViewModel() {
             Sighting(
                 id = "3",
                 title = "U-Residence 3",
-                location = GeoPoint(-6.224, 106.610),
+                location = LatLng(-6.224, 106.610),
                 distance = "1 km away",
                 category = SightingCategory.MANY_CATS,
                 status = "MANY CATS",
@@ -58,7 +59,7 @@ class MapViewModel : ViewModel() {
             Sighting(
                 id = "4",
                 title = "Pet Care Plus",
-                location = GeoPoint(-6.224, 106.613),
+                location = LatLng(-6.224, 106.613),
                 distance = "600m away",
                 category = SightingCategory.VET,
                 status = "OPEN",
@@ -123,7 +124,9 @@ class MapViewModel : ViewModel() {
     }
 
     fun onGetRouteClick() {
-        _uiState.update { it.copy(isShowingRoute = true, routeDestination = it.selectedSighting?.location) }
+        val loc = _uiState.value.selectedSighting?.location
+        val geoPoint = loc?.let { GeoPoint(it.latitude, it.longitude) }
+        _uiState.update { it.copy(isShowingRoute = true, routeDestination = geoPoint) }
     }
 
     fun onSubmitReport() {

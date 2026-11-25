@@ -3,30 +3,41 @@ package com.example.feederku.views.auth
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.CustomCredential
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import com.example.feederku.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
-suspend fun getGoogleIdToken(
+suspend fun signInWithGoogle(
     context: Context,
-): Result<String> = try {
-    val option = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false)
-        .setServerClientId(context.getString(R.string.google_web_client_id))
-        .build()
-    val request = GetCredentialRequest.Builder().addCredentialOption(option).build()
-    val cred = CredentialManager.create(context).getCredential(context, request).credential
-    if (cred is CustomCredential &&
-        cred.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-    ) {
-        Result.success(GoogleIdTokenCredential.createFrom(cred.data).idToken)
-    } else {
-        Result.failure(Exception("Credential is not a Google ID token"))
+    webClientId: String = "814320278857-6dk33sq6guim5qnto1j2ui561g09ssn1.apps.googleusercontent.com"
+): Result<String> {
+    return try {
+        val credentialManager = CredentialManager.create(context)
+
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(webClientId)
+            .build()
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        val result = credentialManager.getCredential(
+            request = request,
+            context = context
+        )
+
+        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.credential.data)
+        Result.success(googleIdTokenCredential.idToken)
+    } catch (e: GetCredentialCancellationException) {
+        Result.failure(Exception("Login cancelled"))
+    } catch (e: Exception) {
+        Result.failure(e)
     }
-} catch (e: GetCredentialCancellationException) {
-    Result.failure(Exception("Login cancelled"))
-} catch (e: Exception) {
-    Result.failure(e)
+}
+
+// Helper function used by Login and SignUp routes
+suspend fun getGoogleIdToken(context: Context): Result<String> {
+    return signInWithGoogle(context)
 }

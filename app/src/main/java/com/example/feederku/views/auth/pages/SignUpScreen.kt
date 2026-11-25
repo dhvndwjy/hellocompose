@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpRoute(
     onNavigateToLogin: () -> Unit,
+    onLoginSuccess: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory),
@@ -52,6 +53,12 @@ fun SignUpRoute(
         }
     }
 
+    LaunchedEffect(uiState.isAuthenticated) {
+        if (uiState.isAuthenticated) {
+            onLoginSuccess()
+        }
+    }
+
     SignUpScreen(
         uiState = uiState,
         onNameChange = viewModel::onNameChange,
@@ -64,7 +71,13 @@ fun SignUpRoute(
             scope.launch {
                 getGoogleIdToken(context)
                     .onSuccess(viewModel::onGoogleIdToken)
-                    .onFailure { viewModel.onGoogleError(it.message) }
+                    .onFailure { 
+                        val errorMsg = it.message ?: "Google login failed"
+                        viewModel.onGoogleError(errorMsg)
+                        if (errorMsg != "Login cancelled") {
+                            android.widget.Toast.makeText(context, errorMsg, android.widget.Toast.LENGTH_LONG).show()
+                        }
+                    }
             }
         },
         modifier = modifier

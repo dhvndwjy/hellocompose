@@ -4,18 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.feederku.model.FeedPost
 import com.example.feederku.views.community.data.ChatRepository
 import com.example.feederku.views.community.data.FirebaseChatRepository
+import com.example.feederku.views.community.data.GroupItem
 import com.example.feederku.views.community.model.ChatUiState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -24,7 +20,14 @@ class ChatViewModel(
 ) : ViewModel() {
 
     private val limit = MutableStateFlow(PAGE_SIZE)
-    private var observeJob: Job? = null
+    private var observeMessagesJob: Job? = null
+    private var observePostsJob: Job? = null
+
+    private val _groups = MutableStateFlow<List<GroupItem>>(emptyList())
+    val groups: StateFlow<List<GroupItem>> = _groups.asStateFlow()
+
+    private val _posts = MutableStateFlow<List<FeedPost>>(emptyList())
+    val posts: StateFlow<List<FeedPost>> = _posts.asStateFlow()
 
     private val _uiState = MutableStateFlow(
         ChatUiState(currentUserId = repository.currentUserId)
@@ -32,25 +35,37 @@ class ChatViewModel(
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
     init {
-        startObserving()
+        loadGroups()
+        selectGroup("default_group")
     }
 
-    // Whenever the limit changes, the listener restarts with the new limit
+    private fun loadGroups() {
+        viewModelScope.launch {
+            repository.observeGroups().collect { groupList ->
+                _groups.value = groupList
+            }
+        }
+    }
+
+    fun selectGroup(groupId: String) {
+        startObservingMessages(groupId)
+        startObservingPosts(groupId)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun startObserving() {
-        observeJob?.cancel()
-        observeJob = viewModelScope.launch {
+    private fun startObservingMessages(groupId: String) {
+        observeMessagesJob?.cancel()
+        observeMessagesJob = viewModelScope.launch {
             limit
                 .flatMapLatest { n ->
-                    repository.observeMessages(n).map { list -> n to list }
+                    repository.observeMessages(groupId, n).map { list -> n to list }
                 }
                 .catch {
                     _uiState.update { s ->
                         s.copy(
                             isLoading = false,
-                            isLoadingOlder = false,
                             loadFailed = true,
-                            errorMessage = "Couldn't load messages. Check your connection."
+                            errorMessage = "Couldn't load messages."
                         )
                     }
                 }
@@ -59,9 +74,7 @@ class ChatViewModel(
                         s.copy(
                             messages = list,
                             isLoading = false,
-                            isLoadingOlder = false,
                             loadFailed = false,
-                            // If we got a full page, there may be older messages
                             canLoadMore = list.size >= n
                         )
                     }
@@ -69,15 +82,45 @@ class ChatViewModel(
         }
     }
 
-    fun retry() {
-        _uiState.update { it.copy(isLoading = true, loadFailed = false) }
-        startObserving()
+    private fun startObservingPosts(groupId: String) {
+        observePostsJob?.cancel()
+        observePostsJob = viewModelScope.launch {
+            repository.observePosts(groupId).collect { postList ->
+                _posts.value = postList
+            }
+        }
     }
 
-    fun onLoadOlderClick() {
+    fun createGroup(name: String, initials: String) {
+        viewModelScope.launch {
+            try {
+                repository.createGroup(name, initials)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to create group") }
+            }
+        }
+    }
+
+    fun createPost(groupId: String, content: String) {
+        viewModelScope.launch {
+            try {
+                repository.createPost(groupId, content)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to create post") }
+            }
+        }
+    }
+
+    fun retry(groupId: String) {
+        _uiState.update { it.copy(isLoading = true, loadFailed = false) }
+        startObservingMessages(groupId)
+    }
+
+    fun onLoadOlderClick(groupId: String) {
         if (_uiState.value.isLoadingOlder) return
         _uiState.update { it.copy(isLoadingOlder = true) }
         limit.update { it + PAGE_SIZE }
+        startObservingMessages(groupId)
     }
 
     fun onInputChange(text: String) {
@@ -85,22 +128,21 @@ class ChatViewModel(
         _uiState.update { it.copy(input = text) }
     }
 
-    fun onSendClick() {
+    fun onSendClick(groupId: String) {
         val text = _uiState.value.input.trim()
         if (text.isEmpty() || text.length > MAX_MESSAGE_LENGTH) return
 
         _uiState.update { it.copy(input = "") }
         viewModelScope.launch {
             try {
-                repository.sendMessage(text)
+                repository.sendMessage(groupId, text)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                // Give the text back so the user doesn't have to retype it
                 _uiState.update { s ->
                     s.copy(
                         input = if (s.input.isBlank()) text else s.input,
-                        errorMessage = "Message failed to send. Please try again."
+                        errorMessage = "Message failed to send."
                     )
                 }
             }

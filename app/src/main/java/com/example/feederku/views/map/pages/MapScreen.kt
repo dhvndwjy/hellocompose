@@ -85,7 +85,7 @@ fun MapScreen(
                     // Add Markers
                     uiState.sightings.forEach { sighting ->
                         val marker = Marker(mapView).apply {
-                            position = sighting.location
+                            position = GeoPoint(sighting.location.latitude, sighting.location.longitude)
                             title = sighting.title
                             setOnMarkerClickListener { _, _ ->
                                 viewModel.onSightingClick(sighting)

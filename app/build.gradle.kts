@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.googleid)
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     // CameraX
     val cameraVersion = "1.4.1"
@@ -88,6 +89,9 @@ dependencies {
     // Fix for ListenableFuture resolution
     implementation("com.google.guava:guava:33.3.1-android")
     implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
+
+    //Maps
+    implementation("org.maplibre.gl:android-sdk:11.8.0")
 
     // Testing Dependencies
     testImplementation("junit:junit:4.13.2")

@@ -90,6 +90,7 @@ fun InputField(
                 cursorColor = buttonGreen,
                 focusedTextColor = textBrown,
                 unfocusedTextColor = textBrown,
+                errorTextColor = textBrown,
                 focusedPlaceholderColor = textBrown.copy(alpha = 0.4f),
                 unfocusedPlaceholderColor = textBrown.copy(alpha = 0.4f)
             )
